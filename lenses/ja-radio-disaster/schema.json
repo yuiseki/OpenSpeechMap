@@ -1,0 +1,30 @@
+{
+  "type": "object",
+  "properties": {
+    "category": {
+      "type": "string",
+      "enum": [
+        "ニュース",
+        "気象",
+        "交通",
+        "音楽",
+        "ドラマ",
+        "トーク",
+        "語学・教養",
+        "スポーツ",
+        "その他"
+      ]
+    },
+    "topic": {
+      "type": "string"
+    },
+    "is_disaster": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "category",
+    "topic",
+    "is_disaster"
+  ]
+}

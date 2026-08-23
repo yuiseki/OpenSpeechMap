@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# A stand-in for `aiq extract`. Adds the fields the lens schema declares,
+# without asking a language model. Values are derived from the input text by
+# simple rules, so a test can predict them exactly.
+#
+# Tests must not call a real model: the same prompt does not give the same
+# answer twice, and a test whose expected value moves is not a test.
+set -euo pipefail
+
+[ "${1:-}" = "extract" ] || { echo "stub aiq: only 'extract' is stubbed, got: ${1:-}" >&2; exit 2; }
+shift
+
+SCHEMA=""; INPUT_FIELD=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --schema-file) SCHEMA="$2"; shift 2 ;;
+    --input-field) INPUT_FIELD="$2"; shift 2 ;;
+    --instruction-file|--system-file|--model|--api-base-url|--max-concurrency|--input-type)
+      shift 2 ;;
+    *) shift ;;
+  esac
+done
+[ -n "$SCHEMA" ] || { echo "stub aiq: --schema-file is required" >&2; exit 2; }
+
+# Which lens is this? The stub answers in whatever shape the schema asks for.
+FIELDS=$(jq -r '.properties | keys | join(" ")' "$SCHEMA")
+
+while IFS= read -r line; do
+  [ -n "$line" ] || continue
+  jq -c --arg f "$INPUT_FIELD" --arg fields "$FIELDS" '
+    . as $in
+    | (.[$f] // "") as $text
+    | ($fields | split(" ")) as $want
+    | ($text | length == 0) as $empty
+    | reduce $want[] as $k ({};
+        .[$k] =
+          if $empty then null
+          elif $k == "is_disaster" then ($text | test("雨|地震|避難|警報|氾濫"))
+          elif $k == "is_event"    then ($text | test("花火大会|祭りが開催"))
+          elif $k == "category"    then (if ($text | test("雨|警報")) then "気象" else "その他" end)
+          elif $k == "fest_category" then (if ($text | test("花火大会")) then "花火大会" else "該当なし" end)
+          elif $k == "topic"       then ($text | .[0:40])
+          elif $k == "place"       then (($text | capture("(?<p>[^、。 ]+[市区町村])").p) // "")
+          elif $k == "reason"      then "stub"
+          else "stub" end)
+    | $in + .
+  ' <<< "$line"
+done

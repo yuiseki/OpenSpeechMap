@@ -1,0 +1,57 @@
+# Copy this to speechmap.yaml and change the three endpoints.
+#
+#   cp speechmap.example.yaml speechmap.yaml
+#   speechmap-pass --plan          # validates without doing any work
+#
+# Paths are resolved against this file, not against the working directory, so it
+# means the same thing run from anywhere, including from a timer. An unknown key
+# is an error rather than something ignored: a setting you believe you have set
+# and have not is worse than a typo you are told about.
+
+# Where the speech comes from. The kind decides how much of the chain runs.
+#
+#   http         a stream URL.        record -> transcribe -> lens -> series
+#   sdr          an RTL-SDR dongle.   record -> transcribe -> lens -> series
+#   dir          recordings you have.          transcribe -> lens -> series
+#   transcripts  transcripts you have.                       lens -> series
+source:
+  kind: http
+  url: http://npr-ice.streamguys1.com/live.mp3
+  label: NPR              # goes in every filename, ahead of the timestamp
+  segment_sec: 30         # seconds per recording. 300 is a sensible default
+  retention_hours: 168    # delete recordings older than this. 0 disables it
+  max_gb: 50              # delete oldest once the total exceeds this. 0 disables it
+
+  # For kind: sdr, replace url with these.
+  # freq: 82.5M
+  # gain: 19.7
+  # device: "0"
+
+  # For kind: dir or transcripts, replace url with this.
+  # path: ./recordings
+
+# Everything this run writes. Recordings, transcripts, labels, places, series.
+out: ./out
+
+# Three text files that decide what counts as a signal. Copy a directory from
+# lenses/ and edit the text; see lenses/README.md.
+lens: lenses/en-radio-disaster
+
+transcribe:
+  chunk_sec: 30           # a minute is right for most speech; see docs/COMMANDS.md
+  language: en            # empty lets the recogniser detect one
+  whisper_url: http://127.0.0.1:8080/inference
+  skip_newest: true       # leave the file speechmap-record is still writing
+
+lens_stage:
+  llm_url: http://127.0.0.1:8081/v1
+  model: your-model-alias # curl "$llm_url/models" lists the names it accepts
+  loci_url: http://127.0.0.1:30101
+  select: .is_disaster    # a jq expression. Must match a field your lens emits
+  place_field: topic      # the only text place resolution sees
+  concurrency: 6          # parallel model calls. The model is usually the limit
+
+series:
+  bucket: hour            # or day
+  key_field: category     # one series per value. Empty for one combined series
+  select: .is_disaster

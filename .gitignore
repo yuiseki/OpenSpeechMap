@@ -1,0 +1,26 @@
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+dist/
+build/
+*.egg-info/
+
+# 実行の中間生成物。自分の出力を repo に置いてしまう事故を防ぐ
+out/
+*.jsonl
+*.geojson
+
+# ただしビューアのサンプルは成果物ではなく同梱物なので追跡する
+!web/public/sample/**
+!lenses/**/*.json
+
+# 作業中のスクリーンショットなど。公開しない
+tmp/
+
+# 外部プログラムの checkout 置き場。README がここに clone させる。
+# リポジトリの外に書かないため、かつ git status を汚さないため。
+/.tools/
+
+# その人の環境固有の宣言。example を写して作るもの
+/speechmap.yaml

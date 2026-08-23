@@ -1,0 +1,31 @@
+{
+  "type": "object",
+  "properties": {
+    "fest_category": {
+      "type": "string",
+      "enum": [
+        "花火大会",
+        "祭り・盆踊り",
+        "山車・神輿",
+        "灯籠・精霊流し",
+        "花火・祭り以外の催事",
+        "該当なし"
+      ]
+    },
+    "is_event": {
+      "type": "boolean"
+    },
+    "place": {
+      "type": "string"
+    },
+    "reason": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "fest_category",
+    "is_event",
+    "place",
+    "reason"
+  ]
+}

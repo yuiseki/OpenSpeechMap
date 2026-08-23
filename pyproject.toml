@@ -1,0 +1,40 @@
+[project]
+name = "openspeechmap"
+version = "0.1.0"
+description = "Find the signals you care about in speech, and put them on a map and a timeline"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "yuiseki" }]
+keywords = ["speech", "asr", "geocoding", "openstreetmap", "situational-awareness", "cli"]
+
+# Deliberately almost nothing. The work is done by other programs -- see
+# docs/ADR/0003-bind-existing-oss.md -- and this package is the part that binds
+# them: argument handling, validation, the small joins, and error messages that
+# say what to fix.
+#
+# The programs it drives are not Python dependencies because they are not
+# imported. `speechmap --check` reports which of them are reachable.
+dependencies = ["typer>=0.12", "pyyaml>=6"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[project.scripts]
+speechmap = "openspeechmap.cli:speechmap"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/openspeechmap"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 96
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]

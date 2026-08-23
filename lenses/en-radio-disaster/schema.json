@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "is_disaster": {
+      "type": "boolean"
+    },
+    "category": {
+      "type": "string",
+      "enum": ["weather", "earthquake", "flood", "fire", "conflict",
+               "accident", "other-news", "not-news"]
+    },
+    "topic": {
+      "type": "string"
+    }
+  },
+  "required": ["is_disaster", "category", "topic"]
+}

@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# A stand-in for `locitorium resolve`. Emits one feature per place-looking
+# token, with coordinates for the ones a fixed table knows and no coordinates
+# for the rest, so tests can check both paths without a Nominatim.
+set -euo pipefail
+
+[ "${1:-}" = "resolve" ] || { echo "stub locitorium: only 'resolve' is stubbed" >&2; exit 2; }
+shift
+
+TEXT_FIELD="text"; ID_FIELD="id"; FORMAT="jsonl"
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --text-field) TEXT_FIELD="$2"; shift 2 ;;
+    --id-field) ID_FIELD="$2"; shift 2 ;;
+    --format) FORMAT="$2"; shift 2 ;;
+    --server-url) shift 2 ;;
+    --quiet) shift ;;
+    *) shift ;;
+  esac
+done
+[ "$FORMAT" = "geojson" ] || { echo "stub locitorium: only --format geojson is stubbed" >&2; exit 2; }
+
+# Known places resolve; anything else comes back rejected, which is what a
+# misheard place name does for real.
+jq -s --arg tf "$TEXT_FIELD" --arg idf "$ID_FIELD" '
+  {"柏市":   [139.9757, 35.8676],
+   "市原市": [140.1155, 35.4980],
+   "千葉市": [140.1063, 35.6071],
+   "長岡市": [138.8515, 37.4461]} as $known
+  | {type: "FeatureCollection",
+     features: [
+       .[] as $r
+       | ($r[$tf] // "") as $t
+       | [$known | keys[] | select(. as $k | $t | contains($k))] as $hits
+       | (if ($hits | length) > 0
+          then $hits[] | {name: ., ok: true}
+          else ($t | capture("(?<p>[^、。 ]+[市区町村])").p // null)
+               | if . == null then empty else {name: ., ok: false} end
+          end) as $m
+       | {type: "Feature",
+          geometry: (if $m.ok then {type: "Point", coordinates: $known[$m.name]} else null end),
+          properties: {
+            input_id: ($r[$idf] | tostring),
+            mention: $m.name,
+            status: (if $m.ok then "resolved" else "rejected" end),
+            osm_type: (if $m.ok then "relation" else null end),
+            osm_id: (if $m.ok then 1 else null end),
+            display_name: (if $m.ok then ($m.name + ", 日本") else null end),
+            country_code: (if $m.ok then "JP" else null end)
+          }}
+     ]}
+'

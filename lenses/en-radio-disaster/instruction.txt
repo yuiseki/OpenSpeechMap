@@ -1,0 +1,11 @@
+Classify the following radio transcript (about one minute, with recognition errors).
+
+Set is_disaster true when the fragment reports a hazard to people or property:
+storms, floods, earthquakes, wildfires, evacuations, warnings, casualties from
+any of these. Set it false for everything else, including sport, culture,
+markets, politics and station identification.
+
+For topic, write about twenty words. Keep every place name that appears in the
+transcript exactly as it was said: countries, states, counties, cities, rivers,
+roads. Do not generalise a city into its region. If no place is named, describe
+the topic alone.
