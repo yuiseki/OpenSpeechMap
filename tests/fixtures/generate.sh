@@ -21,6 +21,10 @@ OUT="$HERE/transcripts.jsonl"
 # Each line: an id, a time, and what the transcript must contain. The cases are
 # chosen to exercise the decisions the pipeline makes, not to be representative
 # of broadcast in general.
+#
+# The specs and the prompt below are in Japanese because what they ask for is
+# Japanese broadcast speech, down to the misrecognitions a recogniser makes on
+# Japanese place names. Asking in English produces worse Japanese.
 read -r -d '' CASES <<'EOF' || true
 d1|2026-08-13T19:00:00|千葉県柏市と市原市で記録的短時間大雨が降り、気象庁が警報を出したという気象情報。市区町村名をはっきり言う。
 d2|2026-08-13T19:05:00|茨城県守谷市に土砂災害警戒情報レベル4が出て避難を呼びかける放送。ただし「守谷市」を音声認識が「森谷市」と誤認識した形で書く。
