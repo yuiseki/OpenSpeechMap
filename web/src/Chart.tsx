@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from "react";
+
 import type { Series } from "./types";
 
 interface Props {
@@ -7,6 +9,9 @@ interface Props {
 }
 
 const H = 170;
+// Below this the chart is unreadable, so it overflows and `.chart` scrolls it
+// rather than shrinking further.
+const MIN_W = 720;
 const PAD = { top: 14, right: 14, bottom: 22, left: 44 };
 
 /** Colours live in one place, in index.css, so the chart and the map agree
@@ -42,12 +47,29 @@ function palette() {
  * no configuration surface, and the click target has to line up with a date.
  */
 export function Chart({ series, selected, onPick }: Props) {
+  // Measured rather than fixed. A viewBox with `width="100%"` keeps its aspect
+  // ratio and centres itself, so a hardcoded width drew the chart in the middle
+  // of a wide screen with dead space either side. Drawing at the measured width
+  // makes one user unit one pixel, which also keeps the text crisp.
+  const box = useRef<HTMLDivElement>(null);
+  const [w, setW] = useState(MIN_W);
+  useEffect(() => {
+    const el = box.current;
+    if (el === null) return;
+    const measure = () =>
+      setW(Math.max(MIN_W, Math.round(el.getBoundingClientRect().width)));
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const { t, value, baseline, anomalies, change_points, segments } = series;
   const n = t.length;
-  if (n === 0) return null;
+  if (n === 0) return <div ref={box} />;
 
   const colour = palette();
-  const w = 900;
   const iw = w - PAD.left - PAD.right;
   const ih = H - PAD.top - PAD.bottom;
   const max = Math.max(1, ...value, ...baseline);
@@ -58,11 +80,14 @@ export function Chart({ series, selected, onPick }: Props) {
     vs.map((v, i) => `${i === 0 ? "M" : "L"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
 
   const gridlines = [0, 1, 2, 3, 4].map((k) => (max * k) / 4);
-  const step = Math.max(1, Math.floor(n / 9));
+  // One label per ~130px rather than a fixed count, so a wide chart gets more
+  // dates instead of the same nine spread thinner.
+  const step = Math.max(1, Math.ceil(n / Math.max(4, Math.floor(iw / 130))));
   const ticks = t.map((d, i) => ({ d, i })).filter(({ i }) => i % step === 0);
 
   return (
-    <svg viewBox={`0 0 ${w} ${H}`} width="100%" height={H} role="img"
+    <div ref={box}>
+    <svg viewBox={`0 0 ${w} ${H}`} width={w} height={H} role="img"
          aria-label={`counts for ${series.key}`}>
       {/* Alternating ground for the stretches between change points, so the
           boundaries read even where the mean barely moves. */}
@@ -137,5 +162,6 @@ export function Chart({ series, selected, onPick }: Props) {
               textAnchor="middle">{d.slice(5, 10)}</text>
       ))}
     </svg>
+    </div>
   );
 }

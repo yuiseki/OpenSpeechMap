@@ -11,6 +11,15 @@ grounds the place names in OpenStreetMap, and emits GeoJSON.
 The theme is yours. Disasters, human security, threats to peacekeeping, or
 festivals. A lens is three text files, not a code change.
 
+![The viewer: where places were named, and the counts over time with the
+unusual days marked](docs/viewer.png)
+
+That is the bundled sample, 57 days of Japanese public radio, which is why the
+labels in it are Japanese. The spike on 2026-07-28 is an earthquake in Kumamoto,
+and it is why the markers cluster on Kyushu. Red bands are the days a score
+crossed the threshold; the violet rules are where the level shifted rather than
+spiked. Your own run puts your own lens and your own stream here.
+
 日本語版: [README.ja.md](README.ja.md)
 
 ## Getting it running
