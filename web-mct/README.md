@@ -4,6 +4,22 @@ An Open MCT front end for the same two files `web/` reads. It exists to answer
 one question — is a mission-control console a better home for this than the
 purpose-built viewer? — and `web/` is untouched so the two can be compared.
 
+![The console: the map of every place named in the run, with the counts under
+it](docs/console-all-days.png)
+
+![The same view with 2026-07-28 picked: the map has narrowed to the 22 places
+named that day, on Kyushu](docs/console-one-day.png)
+
+Those two are the same view, one click apart. The first is the whole run: 135
+places across Japan, and under them the counts for ニュース with the unusual
+days in red and a shift in level marked in violet. The second is after picking
+2026-07-28 — the tallest of those days — and the map has come down to the 22
+places named on it, clustered on Kyushu. That day was an earthquake in
+Kumamoto.
+
+Neither pane is Open MCT's. The tree, the browse bar and the theme are; the map
+and the chart are drawn here.
+
 Published at https://yuiseki.github.io/OpenSpeechMap/ by
 `.github/workflows/pages.yml` on every push that touches `web-mct/`.
 
