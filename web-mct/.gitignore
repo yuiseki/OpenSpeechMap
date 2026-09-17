@@ -1,0 +1,4 @@
+node_modules
+dist
+# Filled by `npm run copy-openmct` from node_modules. Not ours to track.
+public/openmct

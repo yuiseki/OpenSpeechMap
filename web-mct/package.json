@@ -1,0 +1,20 @@
+{
+  "name": "openspeechmap-console",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "copy-openmct": "rm -rf public/openmct && mkdir -p public/openmct && cp -r node_modules/openmct/dist/. public/openmct/",
+    "dev": "npm run copy-openmct && vite",
+    "build": "npm run copy-openmct && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "maplibre-gl": "^5.6.0",
+    "openmct": "4.3.1",
+    "pmtiles": "^4.5.0"
+  },
+  "devDependencies": {
+    "vite": "^7.1.0"
+  }
+}
