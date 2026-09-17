@@ -25,8 +25,10 @@ export function seriesView() {
             const s = series.series.find((x) => x.key === seriesKey);
             if (!s || !holder) return;
             const draw = () => {
-              const w = Math.max(720, Math.round(holder.getBoundingClientRect().width || 720));
-              holder.replaceChildren(renderChart(s, w));
+              const box = holder.getBoundingClientRect();
+              const w = Math.max(720, Math.round(box.width || 720));
+              const h = Math.max(170, Math.round(box.height || 0) - 24);
+              holder.replaceChildren(renderChart(s, w, { height: h }));
             };
             draw();
             if (typeof ResizeObserver !== "undefined") {

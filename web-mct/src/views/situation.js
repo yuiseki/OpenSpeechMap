@@ -65,8 +65,13 @@ export function situationView() {
               show();
             };
             const draw = () => {
-              const w = Math.max(720, Math.round(chartPane.getBoundingClientRect().width || 720));
-              chartPane.replaceChildren(renderChart(s, w, { selected, onPick: pick }));
+              const box = chartPane.getBoundingClientRect();
+              const w = Math.max(720, Math.round(box.width || 720));
+              // The pane is sized in vh by the stylesheet; take what it got,
+              // less the padding, and leave a floor so a short window still
+              // produces a readable chart rather than a smear.
+              const h = Math.max(170, Math.round(box.height || 0) - 14);
+              chartPane.replaceChildren(renderChart(s, w, { selected, onPick: pick, height: h }));
             };
 
             draw();

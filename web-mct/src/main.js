@@ -21,29 +21,20 @@ openmct.install(openmct.plugins.LocalStorage());
 openmct.install(openmct.plugins.Espresso());
 openmct.install(openmct.plugins.MyItems());
 
-// Without these two, Open MCT boots to a blank page and throws
-// `Unknown clock local. Has it been registered with 'addClock'?` — the time
-// conductor is part of the shell, not an optional extra, and it refuses to
-// start without a time system and a valid menu option.
+// Open MCT will not start without a time system: it boots to a blank page and
+// throws `Unknown clock local. Has it been registered with 'addClock'?`.
+// Installing UTCTimeSystem is not enough — it has to be activated as well
+// (sas0 DECISIONS.md D…, recorded for Plot, but it holds for the shell too).
 //
-// Only a fixed option is offered, and no clock. The data is a snapshot of a
-// stretch that has already happened; a realtime clock would offer the operator
-// a mode in which nothing ever arrives.
+// No Conductor. The bar it adds offers a fixed timespan and a live clock over
+// data that is a finished snapshot, so every control on it is either a no-op
+// or a way to hide rows. sas0 leaves it out for the same reason. Bounds are
+// set once so anything that asks has an answer.
 openmct.install(openmct.plugins.UTCTimeSystem());
-openmct.install(
-  openmct.plugins.Conductor({
-    menuOptions: [
-      {
-        name: "Fixed",
-        timeSystem: "utc",
-        bounds: {
-          start: Date.UTC(2026, 5, 27),
-          end: Date.UTC(2026, 7, 24),
-        },
-      },
-    ],
-  }),
-);
+openmct.time.setTimeSystem("utc", {
+  start: Date.UTC(2026, 5, 27),
+  end: Date.UTC(2026, 7, 24),
+});
 
 openmct.objectViews.addProvider(overviewView());
 openmct.objectViews.addProvider(mapView());

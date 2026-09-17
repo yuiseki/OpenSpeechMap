@@ -1,6 +1,6 @@
 import { COLOUR } from "./palette.js";
 
-const H = 260;
+const DEFAULT_H = 260;
 const PAD = { top: 18, right: 18, bottom: 26, left: 48 };
 
 /** Counts over time, with the baseline behind them.
@@ -15,10 +15,15 @@ const PAD = { top: 18, right: 18, bottom: 26, left: 48 };
  * see, which is the right emphasis for the one thing the chart points at.
  *
  * `onPick` is optional: the chart on its own has nothing to drive, and only
- * becomes clickable when something is listening.
+ * becomes clickable when something is listening. `height` is optional too, and
+ * the caller passes the pane's own height so the chart fills what the layout
+ * gave it instead of a number chosen here.
  */
 export function renderChart(s, w, opts = {}) {
-  const { selected = null, onPick = null } = opts;
+  const { selected = null, onPick = null, height = DEFAULT_H } = opts;
+  // Height comes from the pane rather than from a constant, so the chart uses
+  // whatever the layout gives it. The caller decides how much that is.
+  const H = height;
   const { t, value, baseline, anomalies, change_points, segments } = s;
   const n = t.length;
   const svg = el("svg", { viewBox: `0 0 ${w} ${H}`, width: w, height: H,

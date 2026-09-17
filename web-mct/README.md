@@ -38,8 +38,11 @@ itself. Not a Display Layout: sas0 and m3xx-fleet both reached for one, found
 it does not agree with objects that come from a provider, and settled on
 exactly this shape.
 
-The map is on top with the height, the chart underneath at its own size,
-because the chart stops improving above about 280px and the map never does.
+The map is on top with what is going, the chart underneath at `minmax(180px,
+30vh)`. A share of the viewport rather than a fixed height, so the chart grows
+on a large display instead of leaving everything to the map, and a floor so a
+short window does not squeeze it into a smear. `renderChart` takes the height
+from its caller for the same reason — a constant there would undo the vh.
 
 The click is wired inside the view rather than through the time conductor.
 Moving conductor bounds would be the mission-control idiom, and it would also
@@ -61,12 +64,17 @@ README that says it is not for production. The two are easy to confuse.
 
 ## Things that cost time here
 
-**The time conductor is not optional.** Without `UTCTimeSystem` and
-`Conductor`, Open MCT boots to a blank page and throws `Unknown clock local.
-Has it been registered with 'addClock'?`. This holds even though nothing here
-uses the Telemetry API — the conductor is part of the shell. Only a fixed
-option is offered and no clock, because the data is a snapshot of a stretch
-that has already happened.
+**A time system has to be activated, not merely installed.** Without it Open
+MCT boots to a blank page and throws `Unknown clock local. Has it been
+registered with 'addClock'?`. `openmct.install(UTCTimeSystem())` is not enough
+on its own; `openmct.time.setTimeSystem('utc', bounds)` is the part that
+matters. sas0 recorded this for Plot (DECISIONS.md), and it turns out to hold
+for the shell as well, even with no telemetry anywhere.
+
+Installing `Conductor` also clears the error, and that is the wrong fix: it
+buys a bar offering a fixed timespan and a live clock over data that is a
+finished snapshot, so every control on it is either inert or a way to hide
+rows. sas0 leaves the plugin out for the same reason.
 
 **`setAssetPath` must not point into `node_modules`.** It works in `dev` and
 silently breaks in `build`, where `node_modules` is not served. `npm run

@@ -11,6 +11,7 @@ html, body, #app { height: 100%; margin: 0; }
 }
 
 .osm-chart {
+  height: 100%;
   padding: 12px;
   overflow-x: auto;
 }
@@ -40,12 +41,13 @@ html, body, #app { height: 100%; margin: 0; }
   background: rgba(244, 63, 94, 0.08);
 }
 
-/* The combined view: map on top taking what is going, chart under it at its
-   own height. The chart stops improving above about 280px while the map never
-   stops, so the map gets the 1fr. */
+/* The combined view: map on top taking what is going, chart under it at a
+   share of the viewport. A share rather than a fixed height so the chart grows
+   on a large display instead of leaving the map to take everything, and a
+   floor so a short window does not squeeze it to nothing. */
 .osm-split {
   display: grid;
-  grid-template-rows: 1fr auto auto;
+  grid-template-rows: 1fr auto minmax(180px, 30vh);
   height: 100%;
   min-height: 560px;
 }
