@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && npm run copy-maplibre-worker",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "copy-maplibre-worker": "cp node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs node_modules/maplibre-gl/dist/maplibre-gl-shared.mjs dist/assets/ && test -s dist/assets/maplibre-gl-worker.mjs && test -s dist/assets/maplibre-gl-shared.mjs"
   },
   "dependencies": {
     "maplibre-gl": "6.10.0",

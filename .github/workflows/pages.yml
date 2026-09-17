@@ -59,6 +59,13 @@ jobs:
           test -s dist/sample/places.geojson
           test -s dist/openmct/openmct.js
           grep -q "/${{ github.event.repository.name }}/assets/" dist/index.html
+          # MapLibre 6 asks for this at runtime, by a URL it assembles itself.
+          # The bundler cannot see the reference, so nothing emits it and the
+          # map comes up with a canvas and no tiles — a 404 in the console and
+          # nothing that looks like a failure on screen. It shipped that way
+          # once; it does not get to again.
+          test -s dist/assets/maplibre-gl-worker.mjs
+          test -s dist/assets/maplibre-gl-shared.mjs
 
       - uses: actions/upload-pages-artifact@v3
         with:

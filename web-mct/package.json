@@ -6,8 +6,9 @@
   "scripts": {
     "copy-openmct": "rm -rf public/openmct && mkdir -p public/openmct && cp -r node_modules/openmct/dist/. public/openmct/",
     "dev": "npm run copy-openmct && vite",
-    "build": "npm run copy-openmct && vite build",
-    "preview": "vite preview"
+    "build": "npm run copy-openmct && vite build && npm run copy-maplibre-worker",
+    "preview": "vite preview",
+    "copy-maplibre-worker": "cp node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs node_modules/maplibre-gl/dist/maplibre-gl-shared.mjs dist/assets/ && test -s dist/assets/maplibre-gl-worker.mjs && test -s dist/assets/maplibre-gl-shared.mjs"
   },
   "dependencies": {
     "maplibre-gl": "6.10.0",
