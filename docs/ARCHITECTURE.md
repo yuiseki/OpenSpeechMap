@@ -10,7 +10,7 @@ published separately because they are useful on their own:
 |---|---|
 | [locitorium](https://github.com/yuiseki/locitorium) | text → places grounded to OSM entities |
 | [detempus](https://github.com/yuiseki/detempus) | timestamped counts → anomaly candidates and change points |
-| [aiq](https://github.com/yuiseki/aiq) (fork) | text → labels, structured fields, embeddings |
+| [aiq](https://github.com/yuiseki/aiq), a fork of [taylorai/aiq](https://github.com/taylorai/aiq) (MIT) | text → labels, structured fields, embeddings |
 
 OpenSpeechMap is what binds them, which turned out to be the part that was
 missing. This is how:

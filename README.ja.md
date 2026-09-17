@@ -35,7 +35,7 @@ git clone https://github.com/yuiseki/locitorium .tools/locitorium
 export AIQ="$PWD/.tools/aiq" LOCITORIUM="$PWD/.tools/locitorium"
 ```
 
-この 3 つはどれもまだ PyPI に無い。`aiq` と `locitorium` を clone するのは、それぞれ自分の環境を必要とするからである。`speechmap` は `AIQ` と `LOCITORIUM` が指す checkout から実行する。
+この 3 つはどれもまだ PyPI に無い。`aiq` と `locitorium` を clone するのは、それぞれ自分の環境を必要とするからである。`speechmap` は `AIQ` と `LOCITORIUM` が指す checkout から実行する。なお `aiq` は [taylorai/aiq](https://github.com/taylorai/aiq) (MIT) の fork であり、ここで使う `extract` サブコマンドは fork にしか無い。
 
 この 2 つは checkout 内の `.tools/` に落ちる。gitignore してあるので `git status` を汚さず、`rm -rf .tools` で元に戻せる。既に別の場所に持っているなら clone は飛ばして、2 つの変数をそこに向ければよい。有効化した venv と同じく、どちらの変数も `speechmap` を実行するシェルで設定されている必要がある。毎回打ちたくなければ永続する場所に置くこと。
 

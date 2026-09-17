@@ -50,7 +50,9 @@ export AIQ="$PWD/.tools/aiq" LOCITORIUM="$PWD/.tools/locitorium"
 
 None of those three is on PyPI yet. `aiq` and `locitorium` are cloned rather
 than installed because each needs its own environment; `speechmap` runs them
-from the checkout that `AIQ` and `LOCITORIUM` name.
+from the checkout that `AIQ` and `LOCITORIUM` name. That `aiq` is a fork of
+[taylorai/aiq](https://github.com/taylorai/aiq) (MIT); the `extract`
+subcommand this uses exists only in the fork.
 
 Those two clones land in `.tools/` inside this checkout, which is gitignored, so
 they stay out of `git status` and `rm -rf .tools` undoes them. If you already

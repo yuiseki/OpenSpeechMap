@@ -95,8 +95,8 @@ too, which is what you want if you might change it.
 `AIQ`, `LOCITORIUM` or `DETEMPUS`. That fallback is what you want while working
 on one of them: the interesting version is the working tree, not the release.
 
-Note that `aiq extract` exists only in the fork above, not in upstream
-`aiq-cli`.
+`aiq` is a fork of [taylorai/aiq](https://github.com/taylorai/aiq) (MIT).
+Note that `aiq extract` exists only in that fork, not in upstream `aiq-cli`.
 
 ## The services
 

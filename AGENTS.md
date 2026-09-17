@@ -42,8 +42,9 @@ It needs `jq`, [aiq](https://github.com/yuiseki/aiq) (the fork, for `extract`),
 `ffmpeg`, and `--source sdr` also needs `rtl_fm` from librtlsdr.
 
 If they are not installed, point `AIQ` and `LOCITORIUM` at source checkouts
-and `speechmap` will run them with `uv` instead. Note that `aiq extract`
-only exists in the fork above, not in upstream `aiq-cli`.
+and `speechmap` will run them with `uv` instead. `aiq` is a fork of
+[taylorai/aiq](https://github.com/taylorai/aiq) (MIT); `aiq extract` only
+exists in that fork, not in upstream `aiq-cli`.
 
 ## The input you need to produce
 
