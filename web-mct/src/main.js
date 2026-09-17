@@ -15,7 +15,12 @@ import { overviewView } from "./views/overview.js";
 // node_modules before dev and before build. Pointing at node_modules directly
 // works in dev and silently breaks in the built output, where node_modules is
 // not served — the same failure, one deploy later.
-openmct.setAssetPath("/openmct/");
+//
+// Built from BASE_URL rather than written as "/openmct/", because GitHub Pages
+// serves this under /OpenSpeechMap/ and an absolute path would send the worker
+// request to the wrong place — which fails quietly, as search returning
+// nothing rather than as an error.
+openmct.setAssetPath(`${import.meta.env.BASE_URL}openmct/`);
 
 openmct.install(openmct.plugins.LocalStorage());
 openmct.install(openmct.plugins.Espresso());

@@ -5,9 +5,12 @@
 const cache = new Map();
 
 async function load(source) {
+  // Resolved against BASE_URL so the same config works at the root and under
+  // a project-site subdirectory.
+  const at = (p) => new URL(p, new URL(import.meta.env.BASE_URL, location.href)).href;
   const [series, places] = await Promise.all([
-    fetch(source.series).then((r) => r.json()),
-    fetch(source.places).then((r) => r.json()),
+    fetch(at(source.series)).then((r) => r.json()),
+    fetch(at(source.places)).then((r) => r.json()),
   ]);
   return { series, places };
 }

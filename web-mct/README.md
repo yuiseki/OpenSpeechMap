@@ -4,11 +4,20 @@ An Open MCT front end for the same two files `web/` reads. It exists to answer
 one question — is a mission-control console a better home for this than the
 purpose-built viewer? — and `web/` is untouched so the two can be compared.
 
+Published at https://yuiseki.github.io/OpenSpeechMap/ by
+`.github/workflows/pages.yml` on every push that touches `web-mct/`.
+
 ```bash
 npm install
 npm run dev      # http://localhost:5174
 npm run build    # dist/, static, no server needed
 ```
+
+`base` is `/` locally and `/<repository name>/` in CI, because a GitHub Pages
+project site lives under a subdirectory. Anything that builds a URL reads
+`import.meta.env.BASE_URL` instead of assuming the root — an absolute
+`/openmct/` would send the search worker to the wrong place, and that fails as
+search quietly returning nothing rather than as an error.
 
 It reads `public/sample`, a symlink to `web/public/sample`. A second run is a
 second entry in `src/sources.js` and nothing else.

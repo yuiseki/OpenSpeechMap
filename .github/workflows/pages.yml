@@ -1,0 +1,75 @@
+# Publish the Open MCT console to GitHub Pages.
+#
+# Only web-mct is deployed. web/ is still the viewer the README describes; this
+# is the spike, and putting it where people can click it is the point of a
+# spike. Nothing here builds or publishes web/.
+name: Deploy the console to Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "web-mct/**"
+      - "web/public/sample/**"   # the console reads this through a symlink
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time. Queued rather than cancelled, so a push that lands
+# during a deploy still ends up published.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web-mct
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web-mct/package-lock.json
+
+      - run: npm ci
+
+      # A project site lives under /<repo>/, so every generated URL has to
+      # carry that prefix. Getting it from the repository name rather than
+      # writing it down keeps a rename from breaking the deploy silently.
+      - name: Build
+        run: npm run build
+        env:
+          VITE_BASE: /${{ github.event.repository.name }}/
+
+      # The build is no use if the sample data or the Open MCT runtime did not
+      # make it in. Both arrive by indirection — one through a symlink, the
+      # other through a copy step — so both are worth an explicit look.
+      - name: Check the output
+        run: |
+          test -s dist/sample/series.json
+          test -s dist/sample/places.geojson
+          test -s dist/openmct/openmct.js
+          grep -q "/${{ github.event.repository.name }}/assets/" dist/index.html
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web-mct/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
