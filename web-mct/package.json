@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "maplibre-gl": "^5.6.0",
+    "maplibre-gl": "^6.4.1",
     "openmct": "4.3.1",
     "pmtiles": "^4.5.0"
   },
