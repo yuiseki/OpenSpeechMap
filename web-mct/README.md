@@ -21,8 +21,30 @@ It draws none of the content. Every view here builds its own DOM:
 | | |
 |---|---|
 | `src/views/overview.js` | what the run was, and what came out of it |
-| `src/views/map.js` | MapLibre, as in `web/` |
-| `src/views/series.js` | hand-drawn SVG, as in `web/` |
+| `src/views/situation.js` | a series and the places together, chart driving map |
+| `src/views/map.js` | every grounded place, on its own |
+| `src/views/series.js` | one series, on its own |
+
+`src/chart.js` and `src/mapview.js` hold the drawing, so the combined view and
+the single-pane views are the same code seen twice. Both single-pane views are
+kept: a chart with nothing under it can be read at a glance, and a wall display
+showing one series wants the height.
+
+### The combined view
+
+`situation.js` is what `web/` does — a chart and a map that agree about which
+day you are looking at — rebuilt as one custom view that lays out both panes
+itself. Not a Display Layout: sas0 and m3xx-fleet both reached for one, found
+it does not agree with objects that come from a provider, and settled on
+exactly this shape.
+
+The map is on top with the height, the chart underneath at its own size,
+because the chart stops improving above about 280px and the map never does.
+
+The click is wired inside the view rather than through the time conductor.
+Moving conductor bounds would be the mission-control idiom, and it would also
+mean one click silently changes what every other open view is showing. A day
+picked on this chart is a question about this chart.
 
 Not used: the Telemetry API, Plot, Display Layout, PlanLayout,
 `nasa/openmct-map`. That is not a shortcut. Five independent Open MCT consoles
@@ -32,8 +54,10 @@ any of this:
 
 - https://github.com/dwg7/cafebabe/blob/main/patterns/open-mct.md
 
-`nasa/openmct-map` is skipped for its own reasons: no commit since 2022, no
-licence file, and a README that says it is not for production.
+Open MCT itself is in good health — v4.3.1 in August 2026, commits landing
+most weeks. It is the *map plugin*, `nasa/openmct-map`, that is skipped, and
+for its own reasons: no commit since December 2022, no licence file, and a
+README that says it is not for production. The two are easy to confuse.
 
 ## Things that cost time here
 

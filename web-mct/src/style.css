@@ -39,3 +39,43 @@ html, body, #app { height: 100%; margin: 0; }
   border-left: 3px solid #f43f5e;
   background: rgba(244, 63, 94, 0.08);
 }
+
+/* The combined view: map on top taking what is going, chart under it at its
+   own height. The chart stops improving above about 280px while the map never
+   stops, so the map gets the 1fr. */
+.osm-split {
+  display: grid;
+  grid-template-rows: 1fr auto auto;
+  height: 100%;
+  min-height: 560px;
+}
+
+.osm-split-chart {
+  padding: 4px 12px 10px;
+  overflow-x: auto;
+}
+
+.osm-split-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 6px 14px;
+  font-size: 12px;
+  border-top: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.osm-split-day { font-weight: 600; }
+.osm-split-count { opacity: 0.7; }
+
+.osm-split-clear {
+  margin-left: auto;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  border-radius: 3px;
+  padding: 2px 10px;
+  cursor: pointer;
+}
+
+.osm-split-map { position: relative; min-height: 260px; }

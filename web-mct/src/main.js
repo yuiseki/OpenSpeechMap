@@ -3,6 +3,7 @@ import "./style.css";
 import { installTree } from "./tree.js";
 import { mapView } from "./views/map.js";
 import { seriesView } from "./views/series.js";
+import { situationView } from "./views/situation.js";
 import { overviewView } from "./views/overview.js";
 
 // Open MCT loads worker scripts and themes as files at runtime, not through
@@ -46,6 +47,10 @@ openmct.install(
 
 openmct.objectViews.addProvider(overviewView());
 openmct.objectViews.addProvider(mapView());
+// Both apply to a series. The combined one claims the higher priority, so
+// opening a series lands on the chart with the map under it; the chart on its
+// own stays in the view switcher.
+openmct.objectViews.addProvider(situationView());
 openmct.objectViews.addProvider(seriesView());
 
 installTree(openmct);
